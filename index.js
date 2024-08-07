@@ -12,11 +12,11 @@ const client = new Client({
 //const config = require(".key/config.json");
 //const config = require(".key/def_config.json");
 //認証キー
-//const disckey = process.env.DISCORD_KEY;
-const disckey = process.env.DISCORD_DEF_KEY;
+const disckey = process.env.DISCORD_MAIN_KEY;
+//const disckey = process.env.DISCORD_DEF_KEY;
 const s_link = require("./s_links.json");
-//const link = s_link.main;
-const link = s_link.def.ch_id;
+const link = s_link.main;
+//const link = s_link.def.ch_id;
 const fetch = require("node-fetch");
 
 //const prefix = ""; //prefix自分で入れてね
