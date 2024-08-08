@@ -9,17 +9,12 @@ const client = new Client({
   ],
 });
 
-//const config = require(".key/config.json");
-//const config = require(".key/def_config.json");
 //認証キー
 const disckey = process.env.DISCORD_MAIN_KEY;
-//const disckey = process.env.DISCORD_DEF_KEY;
 const s_link = require("./s_links.json");
 const link = s_link.main;
-//const link = s_link.def.ch_id;
 const fetch = require("node-fetch");
 
-//const prefix = ""; //prefix自分で入れてね
 //システム起動メッセージ
 client.on("ready", () => {
   console.log("起動完了");
@@ -28,16 +23,23 @@ client.on("ready", () => {
 client.on("messageCreate", async (message) => {
     if (message.author.bot) return;
     //チャンネルキーの取得
-    var result_ch = link.ch.indexOf(message.channel.id);
-    let page_type = "1";
-    if (result_ch != -1) {
-      var result_del = link.del.indexOf(message.channel.id);
-      if (result_del != -1) {
+    const ch_id_ch = link.ch_id.ch;
+    const ch_id_del = link.ch_id.del;
+
+    var result_ch = ch_id_ch.indexOf(message.channel.id);
+    var page_type = "1";
+
+    if (result_ch === -1) {
+      var result_del = ch_id_del.indexOf(message.channel.id);
+      var page_type = "2";
+      if (result_del === -1) {
         return;
       }
-      let page_type = "2";
+
     }
-    const access_page = link.ch[result_ch];
+    const access_page = ch_id_ch[result_ch];
+    const access_page_del = ch_id_del[result_del];
+
   //文字整形
   let repargs0 = message.content.replace(/<[^>]*>/g, " ");
   let repargs = repargs0.replace(/　/g, " ");
@@ -46,14 +48,9 @@ client.on("messageCreate", async (message) => {
     return string !== "";
   });
 
-  if (message.author.bot) {
-    //botからのmessageを無視
-    return;
-  }
   //削除
-  //var targetch = "1269157507008561173";
-  if(page_type == "2"){
-    if (message.channel.id === access_page) {
+  if(page_type === "2"){
+    if (message.channel.id === access_page_del) {
       const messages = await message.channel.messages.fetch({ limit: 20 });
       // ボット以外が送信したメッセージを抽出
       const filtered = messages.filter((message) => !message.author.bot);
