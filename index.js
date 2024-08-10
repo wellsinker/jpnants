@@ -12,6 +12,7 @@ const client = new Client({
 //認証キー
 const disckey = process.env.DISCORD_MAIN_KEY;
 const s_link = require("./s_links.json");
+const fnc = require("./fnc.js");
 const link = s_link.main;
 const fetch = require("node-fetch");
 
@@ -42,11 +43,13 @@ client.on("messageCreate", async (message) => {
 
   //文字整形
   let repargs0 = message.content.replace(/<[^>]*>/g, " ");
-  let repargs = repargs0.replace(/　/g, " ");
+  let msg = repargs0.replace(/　/g, " ");
+/*
   let repargs2 = repargs.split(" ");
-  const args = repargs2.filter((string) => {
+  const args = repargs.filter((string) => {
     return string !== "";
   });
+  */
 
   //削除
   if(page_type === "2"){
@@ -66,7 +69,7 @@ client.on("messageCreate", async (message) => {
               },
               title: "(*´•nn•`*)ﾋﾐﾂ",
               footer: {
-                text: `to : 内緒です♪`,
+                text: `to : ロバの耳`,
               },
             },
           ],
@@ -78,50 +81,104 @@ client.on("messageCreate", async (message) => {
   if(page_type === "1"){
     if(message.channel.id === access_page){
       //翻訳言語
-      const target = "en";
+
+      const target1 = "en";
       const target2 = "zh-TW";
-      //原文
-      var msg = args[0];
+      const target3 = "ja";
+
+
       //HTTPリンクの場合なら停止
       const linkmsg = URL.canParse(msg);
       if (linkmsg) {
         //message.channel.send("URLでした");
         return;
       }
-      var trmsg1 = await fetch(
-        `https://script.google.com/macros/s/AKfycbwMyBX2bsQk_b6KBzlTpspC_78DdZAkkeeLIblLUF192HAVRd3-s0XPQXkFcO30LbXWwQ/exec?text=${msg}&source=&target=${target}`,
-      ).then((res) => res.text());
-      var trmsg2 = await fetch(
-        `https://script.google.com/macros/s/AKfycbwMyBX2bsQk_b6KBzlTpspC_78DdZAkkeeLIblLUF192HAVRd3-s0XPQXkFcO30LbXWwQ/exec?text=${msg}&source=&target=${target2}`,
-      ).then((res) => res.text());
-      //返し値がエラーなら戻す
-      if (trmsg1 === "[リンク省略]") {
-        return;
-      }
-      if (trmsg1 === "") {
-        return;
-      }
-      if (trmsg2 === "[リンク省略]") {
-        return;
-      }
-      if (trmsg2 === "") {
-        return;
-      }
-      //メッセージ送信
-      message.channel.send({
-        embeds: [
-          {
-            author: {
-              name: `from : ${message.author.displayName}`,
-            },
 
-            title: msg,
-            footer: {
-              text: `to : ${trmsg1}\nto : ${trmsg2}`,
+     const len_msg = msg.length;
+
+      if(len_msg >= 3){
+        //ひらがな、カタカナが含まれているかの判定 true false req_font
+        var reg_hira = /[\u{3000}-\u{301C}\u{3041}-\u{3093}\u{309B}-\u{309E}]/mu;
+        var reg_kana = 	/[\u{3000}-\u{301C}\u{30A1}-\u{30F6}\u{30FB}-\u{30FE}]/mu;
+        var req_font = reg_hira.test(msg);
+        if(req_font === false){
+          var req_font = reg_kana.test(msg);
+        }
+
+
+        var jpflag = "1";
+        var trmsg1;
+        var trmsg2;
+        var lets = "0";
+        if(req_font === false){
+          var trmsg1 = await fetch(
+            `https://script.google.com/macros/s/AKfycbwMyBX2bsQk_b6KBzlTpspC_78DdZAkkeeLIblLUF192HAVRd3-s0XPQXkFcO30LbXWwQ/exec?text=${msg}&source=&target=${target3}`,
+          ).then((res) => res.text());
+          var flag1 = ":flag_jp:";
+          var lets = "1";
+        }
+          var trmsg2 = await fetch(
+            `https://script.google.com/macros/s/AKfycbwMyBX2bsQk_b6KBzlTpspC_78DdZAkkeeLIblLUF192HAVRd3-s0XPQXkFcO30LbXWwQ/exec?text=${msg}&source=&target=${target1}`,
+          ).then((res) => res.text());
+          var flag2 = ":flag_um:";
+        if(trmsg2 === msg || req_font === true){
+          var trmsg3 = await fetch(
+            `https://script.google.com/macros/s/AKfycbwMyBX2bsQk_b6KBzlTpspC_78DdZAkkeeLIblLUF192HAVRd3-s0XPQXkFcO30LbXWwQ/exec?text=${msg}&source=&target=${target2}`,
+          ).then((res) => res.text());
+          var flag3 = ":flag_tw:";
+          if(lets==="0"){
+            var trmsg1 = trmsg3;
+            var flag1 = flag3;
+          }else{
+            var trmsg2 = trmsg3;
+            var flag2 = flag3;       
+          }
+        }
+
+
+        //返し値がエラーなら戻す
+        if (trmsg1 === "[リンク省略]") {
+          return;
+        }
+        if (trmsg1 === "") {
+          return;
+        }
+        if (trmsg1 === "undefined") {
+          return;
+        }
+        if (trmsg2 === "[リンク省略]") {
+          return;
+        }
+        if (trmsg2 === "") {
+          return;
+        }
+        if (trmsg2 === "undefined") {
+          return;
+        }
+
+      
+        message.channel.send({
+          embeds: [
+            {
+              author: {
+                name: `from : ${message.author.displayName}`,
+              },
+              fields: [
+                {
+                  name: `${flag1}`,
+                  value:  `${trmsg1}`,
+                },
+                {
+                  name: `${flag2}`,
+                  value:  `${trmsg2}`,
+                },
+              ],
             },
-          },
-        ],
-      });
+          ],
+        });
+      }else{
+        ///message.channel.send("文字数が短すぎて翻訳出来ませんでした。");
+      }
     };
   }
 });
