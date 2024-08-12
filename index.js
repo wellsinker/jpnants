@@ -103,6 +103,10 @@ client.on("messageCreate", async (message) => {
       var molding = removeEmoji(message.content);
       var molding = molding.replace(/<[^>]*>/g, " ");
       const msg = molding.replace(/　/g, " ");
+    //短文を排除する
+    if (msg.length < 2) {
+      return;
+    }
       const linkmsg = URL.canParse(msg);
       //HTTPリンクの場合なら停止
       if (linkmsg) {
@@ -138,11 +142,17 @@ client.on("messageCreate", async (message) => {
         var flag2 = flag3;
       }
 
-      //返し値がエラーなら戻す
-      if (trmsg1 === "[リンク省略]" || trmsg2 === "[リンク省略]") {
+       //返し値がエラーなら戻す
+       if (trmsg1 === "[リンク省略]") {
         return;
       }
-      if (trmsg1 === "" || trmsg1 === "undefined" || trmsg2 === "" || trmsg2 === "undefined") {
+      if (trmsg1 === "" || trmsg1 === "undefined") {
+        return;
+      }
+      if (trmsg2 === "[リンク省略]") {
+        return;
+      }
+      if (trmsg2 === "" || trmsg2 === "undefined") {
         return;
       }
       //メッセージ送信構成
