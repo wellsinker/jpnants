@@ -21,6 +21,8 @@ client.on("ready", () => {
 });
 //-------------コメント受信開始ここから
 client.on("messageCreate", async (message) => {
+    console.log(message.content);
+  return;
   //BOTなら終了
   if (message.author.bot) return;
   //チャンネルキーの取得
