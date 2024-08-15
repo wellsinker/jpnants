@@ -24,9 +24,17 @@ client.on("messageCreate", async (message) => {
   //BOTなら終了
   if (message.author.bot) return;
   //チャンネルキーの取得
+  if (message.channel.id === "") {
+    console.log("チャンネルキー取得エラー");
+    return;
+  }
   var result_ch = link.ch_id.ch.indexOf(message.channel.id);
   var result_del = link.ch_id.del.indexOf(message.channel.id);
   var result_hl = link.ch_id.hl.indexOf(message.channel.id);
+  if (result_ch === -1 && result_del === -1 && result_hl === -1) {
+    console.log("許可外チャンネルID");
+    return;
+  }
   const page_ch = link.ch_id.ch[result_ch];
   const page_del = link.ch_id.del[result_del];
   const page_hl = link.ch_id.hl[result_hl];
@@ -47,7 +55,8 @@ client.on("messageCreate", async (message) => {
     //HELLO機能
     page_type = "3";
   }
-  if (page_type === null) {
+  if (page_type === null || page_type === "") {
+    console.log(message.channel.id);
     console.log("PAGEタイプ取得エラー");
     return;
   }
