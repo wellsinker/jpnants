@@ -129,7 +129,7 @@ client.on("messageCreate", async (message) => {
         console.log("internet HTTP構文 err");
         return;
       }
-      if (msg === "" || mes === "undefined") {
+      if (msg === "" || msg === "undefined") {
         console.log("MSGが空でした。");
         return;
       }
