@@ -129,6 +129,10 @@ client.on("messageCreate", async (message) => {
         console.log("internet HTTP構文 err");
         return;
       }
+      if (msg === "" || mes === "undefined") {
+        console.log("MSGが空でした。");
+        return;
+      }
       //ひらがな、カタカナが含まれているかの判定 true false req_font
       var reg_hira = /[\u{3041}-\u{3093}\u{30A1}-\u{30F6}]/mu;
       var req_font = reg_hira.test(msg);
