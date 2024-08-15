@@ -60,6 +60,11 @@ client.on("messageCreate", async (message) => {
     console.log("PAGEタイプ取得エラー");
     return;
   }
+  var icon_url = message.author.avatarURL();
+  if (icon_url === null || icon_url === "") {
+    var icon_url = "https://cdn.discordapp.com/embed/avatars/0.png";
+  }
+
   //-------------HELLO機能ここから
   if (page_type === "3") {
     if (message.channel.id === page_hl) {
@@ -78,7 +83,7 @@ client.on("messageCreate", async (message) => {
           {
             author: {
               name: `${message.author.displayName}`,
-              icon_url: `${message.author.avatarURL()}`,
+              icon_url: `${icon_url}`,
             },
             title: message.content,
             footer: {
@@ -90,6 +95,7 @@ client.on("messageCreate", async (message) => {
       const messages = await message.channel.messages.fetch({ limit: 20 });
       // ボット以外が送信したメッセージを抽出
       const filtered = messages.filter((message) => !message.author.bot);
+
       setTimeout(() => {
         // それらのメッセージを一括削除
         message.channel.bulkDelete(filtered);
@@ -99,7 +105,7 @@ client.on("messageCreate", async (message) => {
             {
               author: {
                 name: `${message.author.displayName}`,
-                icon_url: `${message.author.avatarURL()}`,
+                icon_url: `${icon_url}`,
               },
               title: "(*´•nn•`*)ﾋﾐﾂ",
               footer: {
@@ -202,7 +208,7 @@ client.on("messageCreate", async (message) => {
           {
             author: {
               name: `${message.author.displayName}`,
-              icon_url: `${message.author.avatarURL()}`,
+              icon_url: `${icon_url}`,
             },
             fields: [
               {
