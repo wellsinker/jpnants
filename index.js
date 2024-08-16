@@ -152,6 +152,8 @@ client.on("messageCreate", async (message) => {
       var reg_hira = /[\u{3041}-\u{3093}\u{30A1}-\u{30F6}]/mu;
       var req_font = reg_hira.test(msg);
       var lets = "0";
+      var trmsg1 = null;
+      //日本語　ひらがな/カタカナが入ってない場合　lets= 1 trmsg1
       if (req_font === false) {
         var trmsg1 = await fetch(
           `https://script.google.com/macros/s/AKfycbwMyBX2bsQk_b6KBzlTpspC_78DdZAkkeeLIblLUF192HAVRd3-s0XPQXkFcO30LbXWwQ/exec?text=${msg}&source=&target=${target3}`,
@@ -159,23 +161,24 @@ client.on("messageCreate", async (message) => {
         var flag1 = ":flag_jp:";
         var lets = "1";
       }
+      //英語 trmsg2 1がNULL もしくは1が日本語
       var trmsg2 = await fetch(
         `https://script.google.com/macros/s/AKfycbwMyBX2bsQk_b6KBzlTpspC_78DdZAkkeeLIblLUF192HAVRd3-s0XPQXkFcO30LbXWwQ/exec?text=${msg}&source=&target=${target1}`,
       ).then((res) => res.text());
       var flag2 = ":flag_um:";
+      //中国語
       if (trmsg2 === msg || req_font === true) {
         var trmsg3 = await fetch(
           `https://script.google.com/macros/s/AKfycbwMyBX2bsQk_b6KBzlTpspC_78DdZAkkeeLIblLUF192HAVRd3-s0XPQXkFcO30LbXWwQ/exec?text=${msg}&source=&target=${target2}`,
         ).then((res) => res.text());
         var flag3 = ":flag_tw:";
-      }
-      //出力MSGのセット
-      if (lets === "0") {
-        var trmsg1 = trmsg3;
-        var flag1 = flag3;
-      } else {
-        var trmsg2 = trmsg3;
-        var flag2 = flag3;
+        if (trmsg1 === null) {
+          var trmsg1 = trmsg3;
+          var flag1 = flag3;
+        } else {
+          var trmsg2 = trmsg3;
+          var flag2 = flag3;
+        }
       }
 
       //返し値がエラーなら戻す
